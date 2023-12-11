@@ -1,0 +1,72 @@
+@startuml
+
+entity User {
+    username : varchar(100) <<PK>>
+    --
+    password : varchar(100)
+    name : varchar(100)
+    status_toko: boolean  
+    foto_profile: varchar(255)
+    created_at: date
+    updated_at: date
+}
+
+entity Toko {
+    * kode_toko : Integer Auto Increment <<PK>>
+    --
+    nama : varchar(255)
+    email : Varchar(200)
+    id_alamat : integer <<FK>>
+    no_telepon : varchar(255)
+    profile_toko : varchar(255)
+    username_user : varchar(100) <<FK>>
+}
+
+entity Alamat {
+    * id : integer Auto Increment <<PK>> 
+    --
+    jalan : varchar(255)
+    kota : varchar(255) 
+    provinsi : varchar(255)
+    kode_pos : varchar(10)
+    negara : varchar(50)
+}
+entity Barang {
+    * id : integer <PK> 
+    --
+    nama : varchar(255)
+    deskripsi : varchar(255) 
+    harga : BIGINT
+    stok: integer
+    toko_id: integer <<FK>>
+}
+
+entity gambar_barang{
+     * id : integer <PK> 
+    --
+    gambar : varchar(255)
+    kode_barang_id : integer <<FK>>
+}
+
+
+entity panduan{
+     * id : integer <PK> 
+    --
+    judul : varchar(255)
+    deskripsi : varchar(255)
+    url : varchar(255)
+}
+
+entity admin{
+     * id : integer <PK> 
+    --
+    username : varchar(255)
+    email : varchar(255) unique
+    password : varchar(255)
+}
+
+User||--o|Toko
+Toko ||--o{Barang
+Barang |o--o{gambar_barang
+Toko ||--||Alamat
+@enduml
