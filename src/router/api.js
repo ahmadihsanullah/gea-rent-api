@@ -7,6 +7,8 @@ userRouter.use(authMiddleware)
 
 //USER API
 userRouter.get('/api/users/current', userController.get);
+userRouter.delete('/api/users/logout', userController.logout);
+userRouter.get('/api/users', userController.users);
 
 module.exports = {
     userRouter

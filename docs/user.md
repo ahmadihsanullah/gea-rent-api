@@ -111,7 +111,8 @@ Response Body Success:
 {
   "data" : {
     "username" : "gearent",
-    "name" : "Gea Rent"
+    "name" : "Gea Rent",
+    "password": "rahasia"
   }
 }
 ```

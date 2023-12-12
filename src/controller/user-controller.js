@@ -2,35 +2,37 @@ const userService = require('../service/user-service')
 const response = require('../utils/user-response')
 
 const register = (req, res)=>{
-    try {
-        const result =  userService.register(req.body, res)
-        return result
-    } catch (e) {
-        response(500, "error", "Internal Server Error", res)
-    }
+        return  userService.register(req.body, res)
 }
 
 const login = (req, res)=> {
-    try {
-        const result =  userService.login(req.body, res)
-        return result
-    } catch (e) {
-        response(500, "error", "Internal Server Error", res)
-    }
+        return userService.login(req.body, res)
 }
 
 const get = (req, res, next)=>{
     try {
         const username = req.user.username
-        const result =  userService.get(username, res)
-        return result
+        return userService.get(username, res)
     } catch (e) {
         next(e)
     }
 }
 
+const logout = (req, res, next)=>{
+    try{
+        return userService.logout(req.user.username, res)
+    }catch(e){
+        next(e)
+    }
+}
+
+const users = (req, res)=> {
+    return userService.users(res)
+}
 module.exports = {
     register,
     login,
-    get
+    get,
+    logout,
+    users
 }
