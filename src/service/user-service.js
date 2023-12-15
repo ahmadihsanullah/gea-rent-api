@@ -36,20 +36,21 @@ const register = async (req, res) => {
 };
 
 //user login
-const login = (req,res) => {
-  const findUser = `SELECT * FROM users WHERE username = ?`;
+const login =  (req,res) => {
+  const {username, password} = req
+  const findUser = `SELECT * FROM users WHERE username = ? `;
 
-  db.query(findUser,[req.username],(error, fields)=>{
+  db.query(findUser,[username], async(error, result)=>{
         // jika datanya ada
-        if(fields[0]){
-            const isLoginValid =  bcrypt.compare(req.password, fields[0].password)
+        if(result[0]){
+            const isLoginValid = await  bcrypt.compare(password, result[0].password)
             if(!isLoginValid){
                 res.status(401).json({errors:"username or password is wrong"})
             }
             const token = uuid().toString()
   
             const sql = "UPDATE users SET token = ? WHERE username = ?"
-            db.query(sql, [token, fields[0].username],(error, fields)=>{
+            db.query(sql, [token, result[0].username],(error, fields)=>{
                 res.status(200).json({
                   token: token
                 })
@@ -64,6 +65,7 @@ const login = (req,res) => {
 const get = (username, res)=>{
     const sql = `SELECT * FROM users WHERE username = ?`
     db.query(sql, [username], (error, fields)=>{
+        
         if(fields[0]){
             res.status(200).json({data: fields[0]})
         }else{
