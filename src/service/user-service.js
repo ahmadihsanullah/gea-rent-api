@@ -65,7 +65,7 @@ const login =  (req,res) => {
 const get = (username, res)=>{
     const sql = `SELECT * FROM users WHERE username = ?`
     db.query(sql, [username], (error, fields)=>{
-        
+
         if(fields[0]){
             res.status(200).json({data: fields[0]})
         }else{
@@ -97,6 +97,74 @@ const logout = (username, res)=>{
 }
 
 //update current users
+const update = (req, res) => {
+  const { username, name, password, profile, status_toko } = req;
+
+  const countUser = `SELECT COUNT(*) as userCount FROM users WHERE username = ?`;
+
+  db.query(countUser, [username], async (error, result) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ errors: "Internal server error" });
+    }
+
+    const userCount = result[0].userCount;
+
+    if (userCount === 0) {
+      return res.status(404).json({ errors: "User not found" });
+    }
+
+    const data = {};
+
+    if (name !== undefined) {
+      data.name = name;
+    }
+    if (password !== undefined) {
+      data.password = await bcrypt.hash(password, 10);
+    }
+    if (profile !== undefined) {
+      data.profile = profile;
+    }
+    if (status_toko !== undefined) {
+      data.status_toko = status_toko;
+    }
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({ errors: "No data provided for update" });
+    }
+
+    const updateColumns = Object.keys(data).map((key) => `${key} = ?`).join(', ');
+
+    const updateUser = `UPDATE users SET ${updateColumns} WHERE username = ?`;
+
+    db.query(updateUser, [...Object.values(data), username], (updateError, updateResult) => {
+      if (updateError) {
+        console.error(updateError);
+        return res.status(500).json({ errors: "Internal server error" });
+      }
+
+      if (updateResult.affectedRows === 1) {
+        // Setelah UPDATE berhasil, lakukan SELECT untuk mendapatkan data terkini
+        const selectUser = `SELECT * FROM users WHERE username = ?`;
+
+        db.query(selectUser, [username], (selectError, selectResult) => {
+          if (selectError) {
+            console.error(selectError);
+            return res.status(500).json({ errors: "Internal server error" });
+          }
+
+          res.status(200).json({
+            message: "User updated successfully",
+            data: selectResult[0]  // Menggunakan data hasil SELECT
+          });
+        });
+      } else {
+        res.status(500).json({ errors: "Failed to update user" });
+      }
+    });
+  });
+};
+
 
 //list users
 const users = (res)=>{
@@ -112,5 +180,6 @@ module.exports = {
   login,
   get,
   logout,
+  update,
   users
 };

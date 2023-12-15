@@ -11,8 +11,7 @@ const login = (req, res)=> {
 
 const get = (req, res, next)=>{
     try {
-        const username = req.user.username
-        return userService.get(username, res)
+        return userService.get(req.user.username, res)
     } catch (e) {
         next(e)
     }
@@ -26,6 +25,18 @@ const logout = (req, res, next)=>{
     }
 }
 
+const update = (req, res, next)=>{
+    try{
+        const username = req.user.username
+        const request = req.body
+        request.username = username
+
+        return userService.update(request, res)
+    }catch(e){
+        next(e)
+    }
+}
+
 const users = (req, res)=> {
     return userService.users(res)
 }
@@ -34,5 +45,6 @@ module.exports = {
     login,
     get,
     logout,
+    update,
     users
 }
