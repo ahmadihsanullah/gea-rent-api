@@ -14,6 +14,8 @@ userRouter.delete('/api/users/logout', userController.logout);
 userRouter.get('/api/users', userController.users);
 //4. update users
 userRouter.patch('/api/users/update', userController.update);
+//5. get detail user
+userRouter.get('/api/users/search', userController.searchUser);
 
 module.exports = {
     userRouter

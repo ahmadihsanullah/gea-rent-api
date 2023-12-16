@@ -1,5 +1,4 @@
 const userService = require('../service/user-service')
-const response = require('../utils/user-response')
 
 const register = (req, res)=>{
         return  userService.register(req.body, res)
@@ -40,11 +39,23 @@ const update = (req, res, next)=>{
 const users = (req, res)=> {
     return userService.users(res)
 }
+
+const searchUser = (req, res) => {
+    const name = req.query.name;
+  
+    if (!name) {
+      return res.status(400).json({ errors: "Username parameter is required" });
+    }
+  
+    return userService.searchUser(name, res);
+};
+  
 module.exports = {
     register,
     login,
     get,
     logout,
     update,
-    users
+    users,
+    searchUser
 }

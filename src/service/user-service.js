@@ -1,6 +1,5 @@
 const db = require("../application/connection");
 const bcrypt = require("bcrypt");
-const response = require("../utils/user-response");
 const { v4: uuid } = require('uuid');
 
 
@@ -19,7 +18,6 @@ const register = async (req, res) => {
       db.query(sqlInsertUser,[username, password, name],(error, results, fields) => {
           const user = {
             username: username,
-            password:password,
             name: name
           };
          res.status(200).json({
@@ -41,22 +39,22 @@ const login =  (req,res) => {
   const findUser = `SELECT * FROM users WHERE username = ? `;
 
   db.query(findUser,[username], async(error, result)=>{
-        // jika datanya ada
-        if(result[0]){
-            const isLoginValid = await  bcrypt.compare(password, result[0].password)
-            if(!isLoginValid){
-                res.status(401).json({errors:"username or password is wrong"})
-            }
-            const token = uuid().toString()
-  
-            const sql = "UPDATE users SET token = ? WHERE username = ?"
-            db.query(sql, [token, result[0].username],(error, fields)=>{
-                res.status(200).json({
-                  token: token
-                })
-            })
-        }else{
+        // jika datanya tidak ada
+        if(!result[0]){
           res.status(401).json({errors:"username or password is wrong"})
+        }else{
+          const isLoginValid = await  bcrypt.compare(password, result[0].password)
+          if(!isLoginValid){
+              res.status(401).json({errors:"username or password is wrong"})
+          }
+          const token = uuid().toString()
+
+          const sql = "UPDATE users SET token = ? WHERE username = ?"
+          db.query(sql, [token, result[0].username],(error, fields)=>{
+              res.status(200).json({
+                token: token
+              })
+          })
         }
   })
 };
@@ -66,12 +64,16 @@ const get = (username, res)=>{
     const sql = `SELECT * FROM users WHERE username = ?`
     db.query(sql, [username], (error, fields)=>{
 
-        if(fields[0]){
-            res.status(200).json({data: fields[0]})
+        if(!fields[0]){
+          res.status(404).json({
+            errors: "user is not found"
+          })
         }else{
-            res.status(404).json({
-              errors: "user is not found"
-            })
+          const user = {
+            name: fields[0].name,
+            username: fields[0].username
+          }
+          res.status(200).json({data: user})
         }
     })
     
@@ -142,25 +144,18 @@ const update = (req, res) => {
         console.error(updateError);
         return res.status(500).json({ errors: "Internal server error" });
       }
-
       if (updateResult.affectedRows === 1) {
-        // Setelah UPDATE berhasil, lakukan SELECT untuk mendapatkan data terkini
-        const selectUser = `SELECT * FROM users WHERE username = ?`;
-
-        db.query(selectUser, [username], (selectError, selectResult) => {
-          if (selectError) {
-            console.error(selectError);
-            return res.status(500).json({ errors: "Internal server error" });
-          }
-
-          res.status(200).json({
-            message: "User updated successfully",
-            data: selectResult[0]  // Menggunakan data hasil SELECT
-          });
-        });
-      } else {
-        res.status(500).json({ errors: "Failed to update user" });
+      const user = {
+        username: username,
+        name:data.name,
+        password:data.password,
+        status_toko:data.status_toko
       }
+      res.status(200).json({
+        message: "User updated successfully",
+        data: user
+      });
+    }
     });
   });
 };
@@ -175,11 +170,39 @@ const users = (res)=>{
   })
 }
 
+//get user by euqry param
+// Pencarian user berdasarkan username
+const searchUser = (username, res) => {
+  const sql = `SELECT * FROM users WHERE username LIKE ?`;
+  const searchTerm = `%${username}%`;
+
+  db.query(sql, [searchTerm], (error, fields) => {
+    if (error) {x``
+      console.error(error);
+      return res.status(500).json({ errors: "Internal server error" });
+    }
+
+    if (fields.length === 0) {
+      return res.status(404).json({ errors: "No user found" });
+    }
+
+    // const users = fields.map((user) => ({
+    //   name: user.name,
+    //   username: user.username,
+    //   password: 
+    //   // tambahkan field lainnya sesuai kebutuhan
+    // }));
+
+    res.status(200).json({ data: fields });
+  });
+};
+
 module.exports = {
   register,
   login,
   get,
   logout,
   update,
-  users
+  users,
+  searchUser
 };
