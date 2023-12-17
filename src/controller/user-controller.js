@@ -25,15 +25,22 @@ const logout = (req, res, next)=>{
 }
 
 const update = (req, res, next)=>{
-    try{
-        const username = req.user.username
-        const request = req.body
-        request.username = username
+    try {
+        const username = req.user.username;
+        const request = req.body;
+        request.username = username;
+    
+        // Check if there is a profile image in the request
+        if (req.file) {
+          request.profile = req.file.filename;
+        }
+        console.log('Request Body:', request);
+        console.log('Request File:', req.file);
 
-        return userService.update(request, res)
-    }catch(e){
-        next(e)
-    }
+        return userService.update(request, res);
+      } catch (e) {
+        next(e);
+      }
 }
 
 const users = (req, res)=> {

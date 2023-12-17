@@ -125,7 +125,7 @@ const update = (req, res) => {
       data.password = await bcrypt.hash(password, 10);
     }
     if (profile !== undefined) {
-      data.profile = profile;
+      data.profile = profile
     }
     if (status_toko !== undefined) {
       data.status_toko = status_toko;
@@ -139,24 +139,29 @@ const update = (req, res) => {
 
     const updateUser = `UPDATE users SET ${updateColumns} WHERE username = ?`;
 
-    db.query(updateUser, [...Object.values(data), username], (updateError, updateResult) => {
-      if (updateError) {
-        console.error(updateError);
-        return res.status(500).json({ errors: "Internal server error" });
+    db.query(
+      updateUser,
+      [...Object.values(data), username],
+      (updateError, updateResult) => {
+        if (updateError) {
+          console.error(updateError);
+          return res.status(500).json({ errors: "Internal server error" });
+        }
+        if (updateResult.affectedRows === 1) {
+          const user = {
+            username: username,
+            name: data.name,
+            password: data.password,
+            status_toko: data.status_toko,
+            profile: profile,
+          };
+          res.status(200).json({
+            message: "User updated successfully",
+            data: user,
+          });
+        }
       }
-      if (updateResult.affectedRows === 1) {
-      const user = {
-        username: username,
-        name:data.name,
-        password:data.password,
-        status_toko:data.status_toko
-      }
-      res.status(200).json({
-        message: "User updated successfully",
-        data: user
-      });
-    }
-    });
+    );
   });
 };
 

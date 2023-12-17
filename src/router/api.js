@@ -1,6 +1,7 @@
 const express = require("express");
 const userController = require("../controller/user-controller.js");
-const authMiddleware = require('../middleware/auth-middleware.js')
+const authMiddleware = require('../middleware/auth-middleware.js');
+const upload = require("../middleware/upload-image-middleware.js");
 
 const userRouter = express.Router()
 userRouter.use(authMiddleware)
@@ -13,7 +14,7 @@ userRouter.delete('/api/users/logout', userController.logout);
 //3. Get all users
 userRouter.get('/api/users', userController.users);
 //4. update users
-userRouter.patch('/api/users/update', userController.update);
+userRouter.patch('/api/users/update',upload.single('profile'), userController.update);
 //5. get detail user
 userRouter.get('/api/users/search', userController.searchUser);
 
