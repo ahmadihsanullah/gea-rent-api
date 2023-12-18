@@ -15,7 +15,7 @@ userRouter.delete('/api/users/logout', userController.logout);
 userRouter.get('/api/users', userController.users);
 //4. update users
 userRouter.patch('/api/users/update',upload.single('profile'), userController.update);
-//5. get detail user
+//5. search user
 userRouter.get('/api/users/search', userController.searchUser);
 
 module.exports = {

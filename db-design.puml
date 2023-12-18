@@ -5,7 +5,8 @@ entity User {
     --
     password : varchar(100)
     name : varchar(100)
-    status_toko: boolean  
+    status_toko: boolean
+    token: varchar(100  )  
     foto_profile: varchar(255)
     created_at: date
     updated_at: date
