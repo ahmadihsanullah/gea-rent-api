@@ -3,6 +3,14 @@ const db = require('../application/connection');
 const authMiddleware = async (req, res, next) => {
   const token = req.get("Authorization"); // Check header body if there is an authorization
 
+  if(req.path === '/api/admin/users'){
+    return next();
+  }
+  
+  if(req.path === '/api/admin/logout'){
+    return next();
+  }
+
   if (!token) {
     return res.status(401).json({ errors: "unauthorized" });
   }

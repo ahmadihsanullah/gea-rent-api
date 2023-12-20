@@ -165,6 +165,30 @@ const update = (req, res) => {
   });
 };
 
+// login toko
+const loginTokos = (req,res) => {
+  const findUser = `SELECT * FROM users WHERE username = ?  and status_toko = 1`;
+
+  db.query(findUser,[req.username],(error, fields)=>{
+        // jika datanya ada
+        if(fields[0]){
+            const isLoginValid =  bcrypt.compare(req.password, fields[0].password)
+            if(!isLoginValid){
+                res.status(401).json({errors:"username or password is wrong"})
+            }
+            const token = uuid().toString()
+  
+            const sql = "UPDATE users SET token = ? WHERE username = ?"
+            db.query(sql, [token, fields[0].username],(error, fields)=>{
+                res.status(200).json({
+                  token: token
+                })
+            })
+        }else{
+          res.status(401).json({errors:"username or password is wrong"})
+        }
+  })
+};
 
 //list users
 const users = (res)=>{
@@ -208,6 +232,7 @@ module.exports = {
   get,
   logout,
   update,
+  loginTokos,
   users,
   searchUser
 };

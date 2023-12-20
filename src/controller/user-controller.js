@@ -24,6 +24,10 @@ const logout = (req, res, next)=>{
     }
 }
 
+const loginTokos = (req, res)=> {
+    return userService.loginTokos(req.body, res)
+}
+
 const update = (req, res, next)=>{
     try {
         const username = req.user.username;
@@ -63,6 +67,7 @@ module.exports = {
     get,
     logout,
     update,
+    loginTokos,
     users,
     searchUser
 }

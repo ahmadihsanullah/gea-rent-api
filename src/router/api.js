@@ -1,9 +1,11 @@
 const express = require("express");
 const userController = require("../controller/user-controller.js");
+const adminController = require("../controller/admin-controller.js");
 const authMiddleware = require('../middleware/auth-middleware.js');
 const upload = require("../middleware/upload-image-middleware.js");
 
 const userRouter = express.Router()
+const adminRouter = express.Router()
 userRouter.use(authMiddleware)
 
 //USER API
@@ -18,6 +20,18 @@ userRouter.patch('/api/users/update',upload.single('profile'), userController.up
 //5. search user
 userRouter.get('/api/users/search', userController.searchUser);
 
+// Admin API
+// Users
+// 1. GET all users in admin
+adminRouter.get('/api/admin/users', adminController.usersAdmin);
+// 2. UPDATE user
+adminRouter.patch('/api/admin/users/update', upload.single('profile'), adminController.update);
+// 3. Delete User
+adminRouter.delete('/api/admin/logout', adminController.logout);
+
+// Tokos
+
 module.exports = {
-    userRouter
+    userRouter,
+    adminRouter
 }
