@@ -60,6 +60,42 @@ const usersAdmin = (res)=>{
   })
 }
 
+// get list tokos
+const tokoAdmin = (res)=>{
+  let sql =  `SELECT * FROM tokos`
+  db.query(sql,(err, fields)=>{
+    console.log(fields);
+    res.status(200).json({data:fields})
+  })
+}
+
+// get list alamat
+const alamatAdmin = (res) => {
+  let sql = `SELECT * FROM alamat`
+  db.query(sql, (err, fields)=>{
+    console.log(fields);
+    res.status(200).json({data:fields})
+  })
+} 
+
+// get list barang
+const barangAdmin = (res) => {
+  let sql = `SELECT * FROM barang`
+  db.query(sql, (err, fields)=>{
+    console.log(fields);
+    res.status(200).json({data:fields})
+  })
+} 
+
+// get list gambar barang
+const gambarAdmin = (res) => {
+  let sql = `SELECT * FROM gambar_barang`
+  db.query(sql, (err, fields)=>{
+    console.log(fields);
+    res.status(200).json({data:fields})
+  })
+} 
+
 // update user
 const update = (req, res) => {
   const { username, name, password, profile, status_toko } = req;
@@ -132,6 +168,10 @@ module.exports = {
     login,
     logout,
     usersAdmin,
+    tokoAdmin,
+    alamatAdmin,
+    barangAdmin,
+    gambarAdmin,
     update
 };
   

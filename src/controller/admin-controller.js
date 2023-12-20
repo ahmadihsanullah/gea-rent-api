@@ -20,6 +20,26 @@ const usersAdmin = async (req, res)=> {
    return adminService.usersAdmin(res)
 }
 
+// list tokos
+const tokoAdmin = async (req, res)=> {
+   return adminService.tokoAdmin(res)
+}
+
+// list alamat
+const alamatAdmin = async (req, res)=> {
+   return adminService.alamatAdmin(res)
+}
+
+// list barang
+const barangAdmin = async (req, res)=> {
+   return adminService.barangAdmin(res)
+}
+
+// list gambar barang
+const gambarAdmin = async (req, res)=> {
+   return adminService.gambarAdmin(res)
+}
+
 // update user
 const update = (req, res, next)=>{
     try {
@@ -45,5 +65,9 @@ module.exports = {
     login,
     logout,
     usersAdmin,
+    tokoAdmin,
+    alamatAdmin,
+    barangAdmin,
+    gambarAdmin,
     update
 }

@@ -7,6 +7,22 @@ const authMiddleware = async (req, res, next) => {
     return next();
   }
   
+  if(req.path === '/api/admin/tokos'){
+    return next();
+  }
+ 
+  if(req.path === '/api/admin/alamat'){
+    return next();
+  }
+  
+  if(req.path === '/api/admin/barang'){
+    return next();
+  }
+  
+  if(req.path === '/api/admin/gambar'){
+    return next();
+  }
+  
   if(req.path === '/api/admin/logout'){
     return next();
   }

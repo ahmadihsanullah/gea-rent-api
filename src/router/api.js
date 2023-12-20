@@ -30,6 +30,20 @@ adminRouter.patch('/api/admin/users/update', upload.single('profile'), adminCont
 adminRouter.delete('/api/admin/logout', adminController.logout);
 
 // Tokos
+// 1. GET all toko in admin
+adminRouter.get('/api/admin/tokos', adminController.tokoAdmin);
+
+// Alamat
+// 1. GET all alamat in admin
+adminRouter.get('/api/admin/alamat', adminController.alamatAdmin);
+
+// Barang
+// 1. GET all barang in admin
+adminRouter.get('/api/admin/barang', adminController.barangAdmin);
+
+// Gambar barang
+// 1. GET all gambar barang in admin
+adminRouter.get('/api/admin/gambar', adminController.gambarAdmin);
 
 module.exports = {
     userRouter,
